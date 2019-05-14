@@ -63,16 +63,17 @@ Aragon Trusts are composed of two sub-groups:
 | Agent | Execute action | Voting (HOLD)  | Voting (HOLD)      |
 | Agent | Execute action | Voting (HEIRS) | Voting (HOLD)      |
 
-
+*TODO: Assign permissions to multisig to burn tokens on the DAO, in case a key is compromised. And also to add tokens, in case keys get lost.*
 
 # Threat model
 
-- The 2 multisig keys cannot get lost or stolen at the same time
+- The two multisig keys cannot get lost or stolen at the same time
 - The DAO cannot break while also one multisig key gets lost or stolen
-- The beneficiary needs to revoke the *Execute action* permission from the heirs if they create a vote when the beneficiary is still alive
-- The warm key needs to be transmitted to the heirs in some way. You can even pre-sign a transaction that moves the funds to another address (e.g. a DAO composed of the people of your choice) and send your heirs a [Shamir Secret](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) that they can put together to execute that transfer
 - Always initiate transactions to the multisig with the warm key and confirm with the DAO. Otherwise, attackers can predict that the vote will take one week and go to you the exact moment that you would need to sign the confirmation with the warm key
 - One of the hot keys in the DAO needs to be mild (and not hot or warm) so it takes you some effort to sign with it, in order to [prevent wrench attacks](https://xkcd.com/538/)
+- If one of the keys in the DAO gets stolen, you should immediatly burn its token by using the multisig
+- The beneficiary needs to revoke the *Execute action* permission from the heirs if they create a vote when the beneficiary is still alive
+- The warm key needs to be transmitted to the heirs in some way. You can even pre-sign a transaction that moves the funds to another address (e.g. a DAO composed of the people of your choice) and send your heirs a [Shamir Secret](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) that they can put together to execute that transfer
 
 # Creating a new Aragon Trust
 
@@ -86,18 +87,20 @@ Head over to [Aragon](https://app.aragon.org) and create a new DAO with the *Dem
 
 ## 2. Install aragonCLI
 
-[aragonCLI](https://hack.aragon.org/docs/cli-intro.html) is the command-line tool for Aragon power users.
+[aragonCLI](https://hack.aragon.org/docs/cli-intro.html) installs the `dao` command, the tool for Aragon power users.
 
 ```
 $ npm install -g @aragon/cli
 ```
+
+*Note: Add `--environment aragon:mainnet` to all the `dao` commands if you are interacting with the Ethereum mainnet*
 
 ## 3. Install Agent
 
 [Aragon Agent](https://blog.aragon.one/aragon-agent-beta-release/) allows your Aragon DAO to interact with third-party contracts, such as the Gnosis multisig.
 
 ```
-$ dao install {ORG_NAME}.aragonid.eth agent --environment aragon:mainnet
+$ dao install {ORG_NAME}.aragonid.eth agent
 ```
 
 ## 4. Get the Agent address
@@ -105,7 +108,7 @@ $ dao install {ORG_NAME}.aragonid.eth agent --environment aragon:mainnet
 After Aragon Agent is installed, let's get its Ethereum address. This command will display a table, and you need to copy the last address on it.
 
 ```
-$ dao apps {ORG_NAME} --environment aragon:mainnet
+$ dao apps {ORG_NAME}
 ```
 
 ## 5. Allow Voting to operate Agent
@@ -149,7 +152,7 @@ After that, wait for a week, and the transaction will be executed!
 If you are on a hurry, you can use your mild key to vote as well and expedite the transaction.
 
 ```
-dao act {AGENT_ADDRESS} {MULTISIG_ADDRESS} "confirmTransaction(uint256)" 0 --use-frame --environment aragon:mainnet
+dao act {AGENT_ADDRESS} {MULTISIG_ADDRESS} "confirmTransaction(uint256)" 0 --use-frame
 ```
 
 
