@@ -27,11 +27,11 @@ Aragon Trusts are composed of two sub-groups:
 - Signers:
   - Cold key
   - Warm key
-  - Holdings DAO
+  - DAO
   
   
 
-### Holdings DAO
+### DAO
 
 - **Token (HOLD)**: This token would be given to
 
@@ -58,10 +58,10 @@ Aragon Trusts are composed of two sub-groups:
 
 ### DAO permissions
 
-| App                  | Permission     | Grantee        | Permission manager |
-| -------------------- | -------------- | -------------- | ------------------ |
-| Agent (holdings DAO) | Execute action | Voting (HOLD)  | Voting (HOLD)      |
-| Agent (holdings DAO) | Execute action | Voting (HEIRS) | Voting (HOLD)      |
+| App   | Permission     | Grantee        | Permission manager |
+| ----- | -------------- | -------------- | ------------------ |
+| Agent | Execute action | Voting (HOLD)  | Voting (HOLD)      |
+| Agent | Execute action | Voting (HEIRS) | Voting (HOLD)      |
 
 
 
@@ -72,7 +72,7 @@ Aragon Trusts are composed of two sub-groups:
 - The beneficiary needs to revoke the *Execute action* permission from the heirs if they create a vote when the beneficiary is still alive
 - The warm key needs to be transmitted to the heirs in some way. You can even pre-sign a transaction that moves the funds to another address (e.g. a DAO composed of the people of your choice) and send your heirs a [Shamir Secret](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) that they can put together to execute that transfer
 - Always initiate transactions to the multisig with the warm key and confirm with the DAO. Otherwise, attackers can predict that the vote will take one week and go to you the exact moment that you would need to sign the confirmation with the warm key
-- One of the hot keys in the holding DAO needs to be mild (and not hot or warm) so it takes you some effort to sign with it, in order to [prevent wrench attacks](https://xkcd.com/538/)
+- One of the hot keys in the DAO needs to be mild (and not hot or warm) so it takes you some effort to sign with it, in order to [prevent wrench attacks](https://xkcd.com/538/)
 
 # Creating a new Aragon Trust
 
