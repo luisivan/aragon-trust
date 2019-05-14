@@ -65,6 +65,8 @@ Aragon Trusts are composed of two sub-groups:
 
 
 
+### DAO permissions
+
 | App                   | Permission     | Grantee              | Permission manager   |
 | --------------------- | -------------- | -------------------- | -------------------- |
 | Kernel (expenses DAO) | Set app        | Agent (holdings DAO) | Agent (holdings DAO) |
@@ -100,18 +102,30 @@ Obtain Agent app address
 $ dao apps {ORG_NAME} --environment aragon:mainnet
 ```
 
-Create permission for the Agent app to
+Create permission for the Voting app to execute transactions on behalf of the DAO (via the Agent app)
 
 ```
-$ dao acl create {ORG_NAME} {APP_ADDRESS} EXECUTE_ROLE {COLD_DAO} {COLD_DAO}
+$ dao acl create {ORG_NAME} {AGENT_ADDRESS} EXECUTE_ROLE {VOTING_ADDRESS} {VOTING_ADDRESS}
 ```
 
-Give permission to Agent to mint and burn tokens on the expenses DAO
+Mint tokens on the expenses DAO
 
 ```
-$ dao act {AGENT_ADDRESS} {H0T_DAO_TOKEN_MANAGER} "mint(address,uint256)" {RECEIVER} {AMOUNT * 1000000000000000000} --use-frame --environment aragon:mainnet
+$ dao act {AGENT_ADDRESS} {H0T_DAO_TOKEN_MANAGER_ADDRESS} "mint(address,uint256)" {RECEIVER_ADDRESS} {AMOUNT * 1000000000000000000} --use-frame --environment aragon:mainnet
+```
 
-$ dao act {AGENT_ADDRESS} {H0T_DAO_TOKEN_MANAGER} "burn(address,uint256)" {RECEIVER} {AMOUNT * 1000000000000000000} --use-frame --environment aragon:mainnet
+Burn tokens on the expenses DAO
+
+```
+$ dao act {AGENT_ADDRESS} {H0T_DAO_TOKEN_MANAGER_ADDRESS} "burn(address,uint256)" {RECEIVER_ADDRESS} {AMOUNT * 1000000000000000000} --use-frame --environment aragon:mainnet
+```
+
+Grant permission to the holdings DAO to mint and burn tokens on the expenses DAO
+
+```
+$ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "grantPermission(address,address,bytes32)" {AGENT_ADDRESS} {H0T_DAO_ACL} keccak256(MINT_ROLE) --use-frame --environment aragon:mainnet
+
+$ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "grantPermission(address,address,bytes32)" {AGENT_ADDRESS} {H0T_DAO_ACL} keccak256(BURN_ROLE) --use-frame --environment aragon:mainnet
 ```
 
 Revoke permission to the expenses DAO voting app to mint and burn tokens on the expenses DAO
@@ -121,3 +135,5 @@ $ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "revokePermission(address,address,bytes3
 
 $ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "revokePermission(address,address,bytes32)" {HOT_DAO_VOTING} {H0T_DAO_ACL} keccak256(BURN_ROLE) --use-frame --environment aragon:mainnet
 ```
+
+Send confirmation to the  
