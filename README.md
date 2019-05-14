@@ -36,7 +36,7 @@ Aragon Trusts are composed of two sub-groups:
 - **Token (HOLD)**: This token would be given to
 
   - One hot key
-  - One warm key
+  - One mild key
 
 - **Voting (HOLD)**: All keys can move funds immediately, one can move funds with one week delay, one can veto the transfer
   
@@ -53,27 +53,15 @@ Aragon Trusts are composed of two sub-groups:
   - Quorum: 0%
   - Duration: One year
   
-  
-
-### Expenses DAO
-
-- **Token (SPEND)**: Three hot keys
-- **Voting (SPEND)**: 2/3 can move funds immediately, one can move funds with one day delay
-  - Support: 50%
-  - Quorum: 0%
-  - Duration: One day
 
 
 
 ### DAO permissions
 
-| App                   | Permission     | Grantee              | Permission manager   |
-| --------------------- | -------------- | -------------------- | -------------------- |
-| Kernel (expenses DAO) | Set app        | Agent (holdings DAO) | Agent (holdings DAO) |
-| Tokens (SPEND)        | Mint tokens    | Agent (holdings DAO) | Agent (holdings DAO) |
-| Tokens (SPEND)        | Burn tokens    | Agent (holdings DAO) | Agent (holdings DAO) |
-| Agent (holdings DAO)  | Execute action | Voting (HOLD)        | Voting (HOLD)        |
-| Agent (holdings DAO)  | Execute action | Voting (HEIRS)       | Voting (HOLD)        |
+| App                  | Permission     | Grantee        | Permission manager |
+| -------------------- | -------------- | -------------- | ------------------ |
+| Agent (holdings DAO) | Execute action | Voting (HOLD)  | Voting (HOLD)      |
+| Agent (holdings DAO) | Execute action | Voting (HEIRS) | Voting (HOLD)      |
 
 
 
@@ -84,54 +72,93 @@ Aragon Trusts are composed of two sub-groups:
 - The beneficiary needs to revoke the *Execute action* permission from the heirs if they create a vote when the beneficiary is still alive
 - The warm key needs to be transmitted to the heirs in some way. You can even pre-sign a transaction that moves the funds to another address (e.g. a DAO composed of the people of your choice) and send your heirs a [Shamir Secret](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) that they can put together to execute that transfer
 - Always initiate transactions to the multisig with the warm key and confirm with the DAO. Otherwise, attackers can predict that the vote will take one week and go to you the exact moment that you would need to sign the confirmation with the warm key
-- One of the hot keys in the holding DAO needs to be warm so it takes you some effort to sign with it, in order to [prevent wrench attacks](https://xkcd.com/538/)
+- One of the hot keys in the holding DAO needs to be mild (and not hot or warm) so it takes you some effort to sign with it, in order to [prevent wrench attacks](https://xkcd.com/538/)
 
-# Tutorial (WIP)
+# Creating a new Aragon Trust
 
-Deploy a democracy DAO
+## 1. Create a democracy DAO
 
-Install Agent
+Head over to [Aragon](https://app.aragon.org) and create a new DAO with the *Democracy teamplate*. Sensible default for voting parameters:
+
+- Support: 100%
+- Quorum: 0%
+- Duration: One week
+
+## 2. Install aragonCLI
+
+[aragonCLI](https://hack.aragon.org/docs/cli-intro.html) is the command-line tool for Aragon power users.
+
+```
+$ npm install -g @aragon/cli
+```
+
+## 3. Install Agent
+
+[Aragon Agent](https://blog.aragon.one/aragon-agent-beta-release/) allows your Aragon DAO to interact with third-party contracts, such as the Gnosis multisig.
 
 ```
 $ dao install {ORG_NAME}.aragonid.eth agent --environment aragon:mainnet
 ```
 
-Obtain Agent app address
+## 4. Get the Agent address
+
+After Aragon Agent is installed, let's get its Ethereum address. This command will display a table, and you need to copy the last address on it.
 
 ```
 $ dao apps {ORG_NAME} --environment aragon:mainnet
 ```
 
-Create permission for the Voting app to execute transactions on behalf of the DAO (via the Agent app)
+## 5. Allow Voting to operate Agent
+
+Now we will allow the voting app on your DAO to execute actions in behalf of the Agent app, and therefore in behalf of the DAO. For this, you need the Voting app address, which you can obtain in the Aragon client, by going to the *Settings* app.
 
 ```
 $ dao acl create {ORG_NAME} {AGENT_ADDRESS} EXECUTE_ROLE {VOTING_ADDRESS} {VOTING_ADDRESS}
 ```
 
-Mint tokens on the expenses DAO
+## 6. Create a Gnosis multisig
+
+For that, you need to head to [Gnosis multisig](https://wallet.gnosis.pm), click *Add* and then *Create a new wallet*.
+
+You will add three signers: your cold key, your warm key, and the Agent app address.
+
+---
+
+That's it! Now off to creating your first transaction using our brand new Aragon Trust.
+
+# Operating the Trust
+
+## 1. Creating a transaction
+
+You can use your warm key to create the first transaction on the multisig. This should be pretty straightforward by using the Gnosis multisig interface.
+
+Once the transaction is signed with your warm key, you can now create a vote on your DAO to confirm it and move the funds.
+
+You will need the Ethereum address for your Gnosis multisig, and also the transaction ID of the transaction you want to confirm. Please note that the transaction ID needs to be converted from decimal to hexadecimal, by using a tool like [this one](https://www.rapidtables.com/convert/number/decimal-to-hex.html).
 
 ```
-$ dao act {AGENT_ADDRESS} {H0T_DAO_TOKEN_MANAGER_ADDRESS} "mint(address,uint256)" {RECEIVER_ADDRESS} {AMOUNT * 1000000000000000000} --use-frame --environment aragon:mainnet
+dao act {AGENT_ADDRESS} {MULTISIG_ADDRESS} "confirmTransaction(uint256)" {TRANSACTION_ID}
 ```
 
-Burn tokens on the expenses DAO
+## 2. Voting to confirm the transaction
+
+Now, you can use your hot key to vote on the transaction by heading to the Aragon client.
+
+After that, wait for a week, and the transaction will be executed!
+
+If you are on a hurry, you can use your mild key to vote as well and expedite the transaction.
 
 ```
-$ dao act {AGENT_ADDRESS} {H0T_DAO_TOKEN_MANAGER_ADDRESS} "burn(address,uint256)" {RECEIVER_ADDRESS} {AMOUNT * 1000000000000000000} --use-frame --environment aragon:mainnet
+dao act {AGENT_ADDRESS} {MULTISIG_ADDRESS} "confirmTransaction(uint256)" 0 --use-frame --environment aragon:mainnet
 ```
 
-Grant permission to the holdings DAO to mint and burn tokens on the expenses DAO
 
-```
-$ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "grantPermission(address,address,bytes32)" {AGENT_ADDRESS} {H0T_DAO_ACL} keccak256(MINT_ROLE) --use-frame --environment aragon:mainnet
 
-$ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "grantPermission(address,address,bytes32)" {AGENT_ADDRESS} {H0T_DAO_ACL} keccak256(BURN_ROLE) --use-frame --environment aragon:mainnet
-```
+# Adding your heirs (WIP)
 
-Revoke permission to the expenses DAO voting app to mint and burn tokens on the expenses DAO
+## 1. Creating a new token
 
-```
-$ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "revokePermission(address,address,bytes32)" {HOT_DAO_VOTING} {H0T_DAO_ACL} keccak256(MINT_ROLE) --use-frame --environment aragon:mainnet
+## 2. Creating a new Voting app
 
-$ dao act {AGENT_ADDRESS} {H0T_DAO_ACL} "revokePermission(address,address,bytes32)" {HOT_DAO_VOTING} {H0T_DAO_ACL} keccak256(BURN_ROLE) --use-frame --environment aragon:mainnet
-```
+## 3. Giving permission over the Agent to the Voting app
+
