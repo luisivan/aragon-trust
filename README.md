@@ -27,7 +27,7 @@ Aragon Trusts are composed of two sub-groups:
 - Signers:
   - Cold key
   - Warm key
-  - DAO
+  - DAO (via [Aragon Agent](https://blog.aragon.one/aragon-agent-beta-release/))
   
   
 
