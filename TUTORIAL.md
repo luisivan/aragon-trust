@@ -82,9 +82,5 @@ dao act {AGENT_ADDRESS} {MULTISIG_ADDRESS} "confirmTransaction(uint256)" 0 --use
 
 # Adding your heirs (WIP)
 
-## 1. Creating a new token
-
-## 2. Creating a new Voting app
-
-## 3. Giving permission over the Agent to the Voting app
+> Note: This is still being documented, you can [track the pull request](https://github.com/luisivan/aragon-trust/pull/2)
 
