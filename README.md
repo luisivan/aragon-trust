@@ -4,6 +4,8 @@
 
 An Aragon [Trust](https://www.investopedia.com/terms/t/trust.asp) is a kind of Aragon entity in which the trustee is the entity itself.
 
+
+
 # Goals
 
 - Stores assets on the [Gnosis multisig](https://github.com/gnosis/MultiSigWallet), which is the most proven smart contract for storing assets, while still having the flexibility of an Aragon entity.
@@ -13,11 +15,13 @@ An Aragon [Trust](https://www.investopedia.com/terms/t/trust.asp) is a kind of 
 
 
 
-*Disclaimer: This technology makes it easier to implement inheritance, but keep in mind that no technology can ensure that the funds are eventually directed towards the people or causes you originally intend to support*.
+> Disclaimer: This technology makes it easier to implement inheritance, but keep in mind that no technology can ensure that the funds are eventually directed towards the people or causes you originally intend to support.
+
+
 
 # Governance structure
 
-*Note: support percentages and time delays can be tweaked as you want, these are just sensible defaults*
+> Note: support percentages and time delays can be tweaked as you want, these are just sensible defaults.
 
 
 
