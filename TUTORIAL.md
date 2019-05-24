@@ -23,7 +23,7 @@ $ npm install -g @aragon/cli
 [Aragon Agent](https://blog.aragon.one/aragon-agent-beta-release/) allows your Aragon DAO to interact with third-party contracts, such as the Gnosis multisig.
 
 ```
-$ dao install {ORG_NAME}.aragonid.eth agent
+$ dao install {ORG_NAME} agent
 ```
 
 ## 4. Get the Agent and Voting addresses
