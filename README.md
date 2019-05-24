@@ -1,3 +1,5 @@
+![In Aragon We Trust](https://cdn-images-1.medium.com/max/1400/1*ycnh8TX8JkIor7wflKH3Vw.jpeg)
+
 # Aragon Trust
 
 An Aragon [Trust](https://www.investopedia.com/terms/t/trust.asp) is a kind of Aragon entity in which the trustee is the entity itself.
@@ -48,7 +50,6 @@ Aragon Trusts are composed of two sub-groups:
   - Duration: One week
   
 - **Token (HEIRS)**: Arbitrary number of tokens
-  
   - 33% of HEIRS tokens are burnt. This is so HEIRS votes always take their full duration, and are not immediately executed. If the beneficiary has passed away, then you need 66% of all remaining HEIRS holders to vote yes to transfer the funds
   
 - **Voting (HEIRS)**: All transfers have 1 year delay and the beneficiary can revoke the permission for the HEIRS holders to transfer funds
